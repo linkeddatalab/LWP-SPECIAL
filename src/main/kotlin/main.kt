@@ -294,13 +294,30 @@ fun generateConfiguration(mashupConfigFilename: String, policyOutFilename: Strin
 			val wOut = model.getProperty(wRes, LW.wiringOutput).getResource()
 			val wIn = model.getProperty(wRes, LW.wiringInput).getResource()
 
-			for(stmt in model.listStatements(wOut, LW.hasOutputData, nn))
+			for(stmt in model.listStatements(wIn, LW.hasInputData, nn))
 				dataPayloads.add(stmt.getResource())
 
 			print(wIn)
 			print(" -> ")
 			println(wOut)
 		}
+
+		//filter out data objects that are subclass of another object
+		val _model = ModelFactory.createDefaultModel()
+		RDFDataMgr.read(_model, "cpss-special-integrated.ttl")
+		val _reasoner = PelletReasonerFactory.theInstance().create()
+		val _eModel = ModelFactory.createInfModel(_reasoner, _model)
+		val toRemove = ArrayList<Resource>()
+		for(dob1 in dataPayloads)
+			for(dob2 in dataPayloads)
+				if (dob1 != dob2) {
+						if(_eModel.contains(dob1, RDFS.subClassOf, dob2))
+							toRemove.add(dob1)
+						else if(_eModel.contains(dob2, RDFS.subClassOf, dob1))
+							toRemove.add(dob2)
+					}
+		if(toRemove.size>0)
+			dataPayloads.removeAll(toRemove)	
 
 		// root are widgets which is in prev and not available in next
 		//val roots = ArrayList<Resource>()
@@ -354,8 +371,6 @@ fun testCompliance2() {
 fun main(args: Array<String>) {
 	ARQ.init()//!important for loading files
 	/*
-	generateConfiguration("data\\mashup.ttl","data\\mashupPolicy.ttl")
-
 	val policy = constructPolicy(LWR.get("Example_Policy").getURI(), 
 		listOf(SVD.AnyData),
 		listOf(SVPR.Transfer),
@@ -377,8 +392,11 @@ fun main(args: Array<String>) {
 		generateConfiguration(args[1], args[2])
 	else {
 		println("Usage: privacycheck [-generate <mashup.ttl> <policy-out.ttl>] [-check <config.ttl>]")
-		testCompliance1()//warming up loading refPolicyFile
-		println("total processing time (ms) : "+measureTimeMillis { checkFromConfig("data/config1.ttl") })
-		println("total processing time (ms) : "+measureTimeMillis { checkFromConfig("data/config2.ttl") })
+		
+		generateConfiguration("data\\mashup.ttl","data\\mashupPolicy.ttl")
+
+		//testCompliance1()//warming up loading refPolicyFile
+		//println("total processing time (ms) : "+measureTimeMillis { checkFromConfig("data/config1.ttl") })
+		//println("total processing time (ms) : "+measureTimeMillis { checkFromConfig("data/config2.ttl") })
 	}
 }
