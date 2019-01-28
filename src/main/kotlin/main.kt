@@ -244,17 +244,24 @@ fun generateConfiguration(mashupConfigFilename: String, policyOutFilename: Strin
 	load mashup configuration containing list of widgets and their wirings
 	generate policies for mashup level
 	*/
-	val ds = RDFDataMgr.loadDataset(mashupConfigFilename)
-	for(name in ds.listNames()) {
-		println(name)
-		val nm = ds.getNamedModel(name)
-		println(nm.size())
-		for(subj in nm.listSubjects())
-			println(subj)
-	}
+	var model: Model
+	if(mashupConfigFilename.endsWith(".trig")) {
+		println(mashupConfigFilename)
+		val ds = RDFDataMgr.loadDataset(mashupConfigFilename)
+		for(name in ds.listNames()) {
+			println(name)
+			val nm = ds.getNamedModel(name)
+			println(nm.size())
+			for(subj in nm.listSubjects())
+				println(subj)
+		}
 
-	val model = ds.getUnionModel()
-	println(model.size())
+		model = ds.getUnionModel()
+		println(model.size())
+	}
+	else {
+		model = RDFDataMgr.loadModel(mashupConfigFilename)
+	}
 
 	val outModel = ModelFactory.createDefaultModel()
 
@@ -287,8 +294,6 @@ fun generateConfiguration(mashupConfigFilename: String, policyOutFilename: Strin
 
 		val dataPayloads = ArrayList<Resource>()
 		val wirings = model.listStatements(mashup, LW.hasWiring, nn)
-		//val prev = HashMap<Resource,MutableList<Resource>>()
-		//val next = HashMap<Resource,MutableList<Resource>>()
 		for(wObj in wirings) {
 			val wRes = wObj.getResource()
 			val wOut = model.getProperty(wRes, LW.wiringOutput).getResource()
@@ -318,15 +323,6 @@ fun generateConfiguration(mashupConfigFilename: String, policyOutFilename: Strin
 					}
 		if(toRemove.size>0)
 			dataPayloads.removeAll(toRemove)	
-
-		// root are widgets which is in prev and not available in next
-		//val roots = ArrayList<Resource>()
-		//for( w in widgets)
-		//	if(prev.containsKey(w) && !next.containsKey(w))
-		//		roots.add(w)
-		
-		//start with root (outputWidget), recursively
-		//for(w in roots)
 
 		//TODO: if we want an intersection of values instead of separate statements
 		val makeIntersection = false
