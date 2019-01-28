@@ -1,0 +1,45 @@
+# privacy
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> . 
+@prefix svpr:  <http://www.specialprivacy.eu/vocabs/processing#> .
+@prefix svpu:  <http://www.specialprivacy.eu/vocabs/purposes#> .
+@prefix svd:   <http://www.specialprivacy.eu/vocabs/data#> .
+@prefix svdu:  <http://www.specialprivacy.eu/vocabs/duration#> .
+@prefix svl:   <https://www.specialprivacy.eu/vocabs/locations#> .
+@prefix svr:   <https://www.specialprivacy.eu/vocabs/recipients#> .
+@prefix spl:   <https://www.specialprivacy.eu/langs/usage-policy#> .
+@prefix cpss: <http://w3id.org/cityspin/ns/special-cpss#> .
+
+# lwp
+@prefix lwr: <http://linkedwidgets.org/ns/resource/>. 
+lwr:Policy75 rdf:type owl:Class ; # this is the combination of widgets policies
+owl:equivalentClass [
+            owl:intersectionOf ([
+                    rdf:type owl:Restriction ;
+                    owl:onProperty spl:hasData ;
+                    owl:someValuesFrom [owl:unionOf ( svd:Derived svd:Location cpss:Temperature cpss:Temperature cpss:Temperature )]                ]
+[
+                    rdf:type owl:Restriction ;
+                    owl:onProperty spl:hasProcessing ;
+                    owl:someValuesFrom [owl:intersectionOf ( svpr:Transfer )]                ]
+[
+                    rdf:type owl:Restriction ;
+                    owl:onProperty spl:hasPurpose ;
+                    owl:someValuesFrom spl:AnyPurpose                ]
+[
+                    rdf:type owl:Restriction ;
+                    owl:onProperty spl:hasRecipient ;
+                    owl:someValuesFrom spl:AnyRecipient                ]
+ owl:someValuesFrom [owl:intersectionOf (
+                [
+                    rdf:type owl:Restriction ;
+                    owl:onProperty spl:hasLocation ;
+                    owl:someValuesFrom svl:EU                ]
+                [
+                    rdf:type owl:Restriction ;
+                    owl:onProperty spl:hasDuration ;
+                    owl:someValuesFrom spl:AnyDuration
+                ]
+                )
+ ] )].

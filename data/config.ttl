@@ -1,0 +1,17 @@
+@prefix cpss: <http://w3id.org/cityspin/ns/special-cpss#> .
+@prefix lwr: <http://linkedwidgets.org/ns/resource/>
+
+<> cpss:hasConfig [
+	cpss:refPolicy (<cpss-special-integrated.ttl>);
+	cpss:userPolicy <userpolicy.ttl>;
+	cpss:usagePolicy <userlocationpolicy.ttl>;
+	cpss:userSubj lwr:User1_Policy;
+	cpss:usageSubj lwr:UserLocation_Policy
+],
+[
+	cpss:refPolicy (<cpss-special-integrated.ttl>);
+	cpss:userPolicy <user1policy.ttl>;
+	cpss:usagePolicy <userlocationpolicy.ttl>;
+	cpss:userSubj lwr:User1_Policy;
+	cpss:usageSubj lwr:UserLocation_Policy
+]

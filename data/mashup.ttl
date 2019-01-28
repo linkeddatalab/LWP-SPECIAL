@@ -1,0 +1,120 @@
+# generic
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix dc: <http://purl.org/dc/elements/1.1/> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix w3c-format: <http://www.w3.org/ns/formats/> .
+@prefix foaf: <http://xmlns.com/foaf/0.1/> .
+@prefix xml: <http://www.w3.org/XML/1998/namespace> .
+
+# privacy
+@prefix svpr:  <http://www.specialprivacy.eu/vocabs/processing#> .
+@prefix svpu:  <http://www.specialprivacy.eu/vocabs/purposes#> .
+@prefix svd:   <http://www.specialprivacy.eu/vocabs/data#> .
+@prefix svdu:  <http://www.specialprivacy.eu/vocabs/duration#> .
+@prefix svl:   <https://www.specialprivacy.eu/vocabs/locations#> .
+@prefix svr:   <https://www.specialprivacy.eu/vocabs/recipients#> .
+@prefix spl:   <https://www.specialprivacy.eu/langs/usage-policy#> .
+@prefix cpss: <http://w3id.org/cityspin/ns/special-cpss#> .
+
+# shacl
+@prefix sh: <http://www.w3.org/ns/shacl#> .
+
+# lwp
+@prefix lw: <http://linkedwidgets.org/ns/ontology#>
+@prefix lwr: <http://linkedwidgets.org/ns/resource/>
+
+# collection of widgets that can be used
+lwr:UserLocation a lw:InputWidget ;
+    rdfs:label "DataWidget - UserLocation" ;
+    rdfs:comment """
+        Data Widget to load UserLocation data from CSV to RDF
+    """ ;
+    lw:hasInputData svd:Location , svd:UniqueId ;
+    lw:hasOutputData svd:Location , svd:UniqueId ;
+    lw:hasProcessing svpr:Transfer ;
+    lw:hasStorage spl:AnyStorage ;
+.
+
+lwr:EnergyConsumption a lw:InputWidget ;
+    rdfs:label "DataWidget - EnergyConsumption" ;
+    rdfs:comment """
+        Data Widget to load EnergyConsumption data from CSV to RDF
+    """ ;
+    lw:hasInputData svd:Location, cpss:ConsumptionData ;
+    lw:hasOutputData svd:Location, cpss:ConsumptionData ;
+    lw:hasProcessing svpr:Transfer ;
+    lw:hasStorage spl:AnyStorage ;
+.
+
+lwr:EnergyConsumption a lw:InputWidget ;
+    rdfs:label "DataWidget - Temperature" ;
+    rdfs:comment """
+        Data Widget to load WeatherInfo data from CSV to RDF
+    """ ;
+    lw:hasInputData svd:Location, cpss:Temperature ;
+    lw:hasOutputData svd:Location, cpss:Temperature ;
+    lw:hasProcessing svpr:Transfer ;
+    lw:hasStorage spl:AnyStorage ;
+.
+
+lwr:GeoBasedIntegration a lw:ProcessWidget ;
+    rdfs:label "ProcessWidget - GeoBasedIntegration" ;
+    rdfs:comment """
+        Integrate two datasets based on their Geo information
+    """ ;
+    lw:hasInputData svd:Location ;
+    lw:hasOutputData svd:Location, cpss:Integrate ;
+    lw:hasProcessing cpss:Integration ;
+    lw:hasStorage spl:AnyStorage ;
+.
+
+lwr:Anonymization a lw:ProcessWidget ;
+    rdfs:label "ProcessWidget - Anonymization" ;
+    rdfs:comment """
+        Anonymization process of user data
+    """ ;
+    lw:hasInputData svd:UniqueId ;
+    lw:hasOutputData svd:Anonymized ;
+    lw:hasProcessing svpr:Anonymize ;
+    lw:hasStorage spl:AnyStorage ;
+.
+
+lwr:Aggregation a lw:ProcessWidget ;
+    rdfs:label "ProcessWidget - Aggregation" ;
+    rdfs:comment """
+        Aggregation process of user data (sum, avg, max, min)
+    """ ;
+    lw:hasInputData svd:AnyData ; # @JF, I am not sure, I would like to say "numerical", but there is none
+    lw:hasOutputData svd:Derived ;
+    lw:hasProcessing svpr:Aggregate ;
+    lw:hasStorage spl:AnyStorage ;
+.
+
+lwr:Analysis a lw:ProcessWidget ;
+    rdfs:label "ProcessWidget - Analysis" ;
+    rdfs:comment """
+        Analysis process of user data
+    """ ;
+    lw:hasInputData svd:AnyData ;
+    lw:hasOutputData svd:Derived ;
+    lw:hasProcessing svpr:Analyse ;
+    lw:hasStorage spl:AnyStorage ;
+.
+
+# mashups configurations
+# the configuration in these mashups will be used to generate the privacy policies below
+lwr:StandardAnalysis a lw:Mashup ;
+    lw:hasRecipient svr:Public ;
+    lw:hasPurpose svpu:Develop ;
+    lw:hasWidget lwr:UserLocation, lwr:EnergyConsumption, lwr:GeoBasedIntegration ; # just an example
+
+    lw:hasWiring [
+        lw:wiringInput lwr:EnergyConsumption ;
+        lw:wiringOutput lwr:GeoBasedIntegration ;
+    ], [
+        lw:wiringInput lwr:UserLocation ;
+        lw:wiringOutput lwr:GeoBasedIntegration ;
+    ] ;
+.
