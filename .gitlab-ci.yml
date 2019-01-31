@@ -41,6 +41,9 @@ run_experiment:
   when: manual
   only:
     - master
+  artifacts:
+    paths: 
+      - result.zip
   script:
     - gradle build
     - unzip build/distributions/*.zip
