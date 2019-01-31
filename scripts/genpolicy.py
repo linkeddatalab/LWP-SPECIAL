@@ -34,8 +34,8 @@ def create_policy(g, pname, aspects, make_intersection=False):
 		nodes.append(p_node)
 		g.add((p_node, RDF.type, OWL.Restriction))
 		g.add((p_node, OWL.onProperty, prop))
-		if make_intersection and len(dp)>1:
-			g.add((dp_node, OWL.intersectionOf, create_list(g, pvalues)))
+		if make_intersection and len(pvalues)>1:
+			g.add((p_node, OWL.intersectionOf, create_list(g, pvalues)))
 		else:
 			add_objects(g, p_node, OWL.someValuesFrom, pvalues)
 
