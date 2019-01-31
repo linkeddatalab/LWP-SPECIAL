@@ -389,7 +389,7 @@ fun main(args: Array<String>) {
 	else {
 		println("Usage: privacycheck [-generate <mashup.ttl> <policy-out.ttl>] [-check <config.ttl>]")
 		
-		generateConfiguration("data\\mashup.ttl","data\\mashupPolicy.ttl")
+		//generateConfiguration("data\\mashup.ttl","data\\mashupPolicy.ttl")
 
 		//testCompliance1()//warming up loading refPolicyFile
 		//println("total processing time (ms) : "+measureTimeMillis { checkFromConfig("data/config1.ttl") })

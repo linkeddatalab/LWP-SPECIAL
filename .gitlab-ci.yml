@@ -1,15 +1,16 @@
-image: gradle:latest
+#image: gradle:latest
 
 stages:
   - build
   - test
+  - measure
 
 before_script:
   - echo `pwd` # debug
   - echo "$CI_BUILD_NAME, $CI_BUILD_REF_NAME $CI_BUILD_STAGE" # debug
   - export GRADLE_USER_HOME=`pwd`/.gradle
-  - ls
-  - gradle wrapper
+#  - ls
+#  - gradle wrapper
 
 cache:
   paths:
@@ -19,10 +20,11 @@ cache:
 build:
   stage: build
   script:
-    - ./gradlew assemble
+    - gradle build #assemble
   artifacts:
     paths:
       - build/libs/*.jar
+      - build/distributions/*
     expire_in: 1 week
   only:
     - master
@@ -31,6 +33,19 @@ test:
   stage: test
   script:
     - ./gradlew check
+
+run_experiment:
+  stage: measure
+  only:
+    - master
+  script:
+    - gradle build
+    - unzip build/distributions/*.zip
+    - python data/genconfig.py -p data/simplePolicies -o configSimple.ttl -m data/userlocationpolicy.ttl -r data/cpss-special-integrated.ttl
+    - python data/genconfig.py -p data/complexPolicies -o configComplex.ttl -m data/userlocationpolicy.ttl -r data/cpss-special-integrated.ttl
+    - project-0/bin/project-0 -check configSimple.ttl > configSimple.log
+    - project-0/bin/project-0 -check configComplex.ttl > configComplex.log
+    - zip result.zip configSimple.ttl configSimple.log configComplex.ttl configComplex.log
 
 after_script:
   - echo "End CI"
