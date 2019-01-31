@@ -31,11 +31,14 @@ build:
 
 test:
   stage: test
+  before_script:
+    - gradle wrapper
   script:
     - ./gradlew check
 
 run_experiment:
   stage: measure
+  when: manual
   only:
     - master
   script:
@@ -43,8 +46,8 @@ run_experiment:
     - unzip build/distributions/*.zip
     - python data/genconfig.py -p data/simplePolicies -o configSimple.ttl -m data/userlocationpolicy.ttl -r data/cpss-special-integrated.ttl
     - python data/genconfig.py -p data/complexPolicies -o configComplex.ttl -m data/userlocationpolicy.ttl -r data/cpss-special-integrated.ttl
-    - project-0/bin/project-0 -check configSimple.ttl > configSimple.log
-    - project-0/bin/project-0 -check configComplex.ttl > configComplex.log
+    - mashup-privacy-checker/bin/mashup-privacy-checker -check configSimple.ttl > configSimple.log
+    - mashup-privacy-checker/bin/mashup-privacy-checker -check configComplex.ttl > configComplex.log
     - zip result.zip configSimple.ttl configSimple.log configComplex.ttl configComplex.log
 
 after_script:
