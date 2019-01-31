@@ -2,3 +2,5 @@
 /build/
 /gradle/
 gradlew*
+__pycache__
+*.pyc
