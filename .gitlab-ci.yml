@@ -47,7 +47,7 @@ run_experiment:
       - summary.txt
       - simpleRandom/*.ttl
       - complexRandom/*.ttl
-      - *.log
+      - ./*.log
   script:
     - gradle build
     - unzip build/distributions/*.zip
