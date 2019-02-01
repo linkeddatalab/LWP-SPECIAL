@@ -55,8 +55,6 @@ run_experiment:
     - python data/genconfig.py -p data/complexPolicies -o configComplex.ttl -m data/userlocationpolicy.ttl -r data/cpss-special-integrated.ttl
     - mashup-privacy-checker/bin/mashup-privacy-checker -check configSimple.ttl > configSimple.log
     - mashup-privacy-checker/bin/mashup-privacy-checker -check configComplex.ttl > configComplex.log
-    - python scripts/genpolicy.py -d simpleRandom -n 100 
-    - python scripts/genpolicy.py -d complexRandom -n 100 -intersection
     - python scripts/makesummary.py -i configSimple.log >> summary.txt
     - python scripts/makesummary.py -i configComplex.log >> summary.txt
     - zip result.zip configSimple.ttl configSimple.log configComplex.ttl configComplex.log summary.txt data/simplePolicies data/complexPolicies
