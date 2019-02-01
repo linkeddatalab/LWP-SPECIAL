@@ -45,9 +45,9 @@ run_experiment:
     paths: 
       - result.zip
       - summary.txt
-      - simpleRandom/*.ttl
-      - complexRandom/*.ttl
-      - ./*.log
+      - ./*.ttl
+      - ./*.log 
+      - ./*.png
   script:
     - gradle build
     - unzip build/distributions/*.zip
@@ -94,7 +94,7 @@ run_experiment:
     - python scripts/makesummary.py -i config20-complex.log >> summary.txt
     - python scripts/makeplot.py -l configSimple.log configComplex.log -o simple_vs_complex.png
     - python scripts/makeplot.py -l config1-simple.log config1-complex.log config5-simple.log config5-complex.log config10-simple.log config10-complex.log config15-simple.log config15-complex.log config20-simple.log config20-complex.log -o nwidget_vs_simple_vs_complex.png
-    - zip result.zip config*.log config*.ttl random*.ttl summary.txt data/simplePolicies data/complexPolicies
+    - zip result.zip *.png config*.log config*.ttl random*.ttl summary.txt data/simplePolicies/*.ttl data/complexPolicies/*.ttl
 
 after_script:
   - echo "End CI"
