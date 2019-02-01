@@ -49,15 +49,19 @@ def create_policy(g, pname, aspects):
 			for sprop, spvals, srel in pvalues:
 				subr = make_restriction(g, sprop)
 				npvalues.append(subr)
-				if srel in [OWL.intersectionOf, OWL.unionOf]:# and len(pvalues)>1:
+				if srel in [OWL.intersectionOf, OWL.unionOf] and len(pvalues)>1:
 					g.add((subr, srel, create_list(g, spvals)))
 				else:
-					add_objects(g, subr, srel, spvals)
-			pvalues = npvalues
-		if hasSub or rel in [OWL.intersectionOf, OWL.unionOf]:# and len(pvalues)>1:
-			g.add((p_node, rel, create_list(g, pvalues)))
+					add_objects(g, subr, OWL.someValuesFrom, spvals)
+			s_node = BNode()
+			g.add((s_node, OWL.intersectionOf, create_list(g, npvalues)))
+			pvalues = [s_node]
+		if rel in [OWL.intersectionOf, OWL.unionOf] and len(pvalues)>1:
+			s_node = BNode()
+			g.add((s_node, rel, create_list(g, pvalues)))
+			g.add((p_node, OWL.someValuesFrom, s_node))
 		else:
-			add_objects(g, p_node, rel, pvalues)
+			add_objects(g, p_node, OWL.someValuesFrom, pvalues)
 
 	eqCls = BNode()
 	g.add((eqCls, OWL.intersectionOf, create_list(g, nodes)))
@@ -138,7 +142,6 @@ if __name__=="__main__":
 	parser.add_argument("-dirOutput", type=str, metavar="DIR", default=os.getcwd(), help="output directory to write the output file(s)")
 	parser.add_argument("-numPolicies", type=int, metavar="N", default=1, help="create N policies in the output directory")
 	parser.add_argument("-outputFile", type=str, metavar="FILE", help=".ttl file to save the generated policy")
-	#parser.add_argument("-intersection", action="store_true", default=False, help="in case of multiple values generated, it will be written as intersection instead of list of objects")
 	parser.add_argument("-allowTop", action="store_true", default=False, help="when set, allows top concepts (spl:AnyX) to be included")
 	parser.add_argument("-genCount", type=int, default=1, help="set fixed set of values to be generated")
 	args = parser.parse_args()
@@ -179,16 +182,19 @@ if __name__=="__main__":
 
 		# mashup specific	
 		items.append((SPL["hasPurpose"], purposePolicy, OWL.unionOf))
-		items.append((SPL["hasRecipient"], recipientPolicy, OWL.someValuesFrom))
+		items.append((SPL["hasRecipient"], recipientPolicy, OWL.unionOf))
 		
-		create_policy(g, policy_name, items)#, args.intersection)
+		create_policy(g, policy_name, items)
 
-		outfn = args.outputFile if n_pol==1 and args.outputFile is not None else "policy{}.ttl".format(n_pol+1)
-		print(outfn)
+		outfn = args.outputFile if args.numPolicies==1 and args.outputFile is not None else "policy{}.ttl".format(n_pol+1)
 		outdir = os.path.join(os.getcwd(), args.dirOutput)
 		if not os.path.exists(outdir):
 			os.makedirs(outdir)
 		outfull = os.path.join(outdir, outfn)
-		with open(outfull, "wb") as fttl:
-			fttl.write(g.serialize(format="turtle"))	
-		#print(g.serialize(format="turtle").decode("latin-1"))
+
+		if args.outputFile.upper() in ["STDOUT", "CON"]:
+			print(g.serialize(format="turtle").decode("latin-1"))
+		else:
+			print(outfn)	
+			with open(outfull, "wb") as fttl:
+				fttl.write(g.serialize(format="turtle"))

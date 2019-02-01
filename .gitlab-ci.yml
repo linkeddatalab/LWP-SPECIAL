@@ -51,13 +51,50 @@ run_experiment:
   script:
     - gradle build
     - unzip build/distributions/*.zip
+    - python scripts/genpolicy.py -r data/cpss-special-integrated.ttl -o random1.ttl -g 1 -n 1
+    - python scripts/genpolicy.py -r data/cpss-special-integrated.ttl -o random5.ttl -g 5 -n 1
+    - python scripts/genpolicy.py -r data/cpss-special-integrated.ttl -o random10.ttl -g 10 -n 1
+    - python scripts/genpolicy.py -r data/cpss-special-integrated.ttl -o random15.ttl -g 15 -n 1
+    - python scripts/genpolicy.py -r data/cpss-special-integrated.ttl -o random20.ttl -g 20 -n 1
+    - python data/genconfig.py -p data/simplePolicies -r data/cpss-special-integrated.ttl -o config1-simple.ttl -m random1.ttl
+    - python data/genconfig.py -p data/simplePolicies -r data/cpss-special-integrated.ttl -o config5-simple.ttl -m random5.ttl
+    - python data/genconfig.py -p data/simplePolicies -r data/cpss-special-integrated.ttl -o config10-simple.ttl -m random10.ttl
+    - python data/genconfig.py -p data/simplePolicies -r data/cpss-special-integrated.ttl -o config15-simple.ttl -m random15.ttl
+    - python data/genconfig.py -p data/simplePolicies -r data/cpss-special-integrated.ttl -o config20-simple.ttl -m random20.ttl
+    - python data/genconfig.py -p data/complexPolicies -r data/cpss-special-integrated.ttl -o config1-complex.ttl -m random1.ttl
+    - python data/genconfig.py -p data/complexPolicies -r data/cpss-special-integrated.ttl -o config5-complex.ttl -m random5.ttl
+    - python data/genconfig.py -p data/complexPolicies -r data/cpss-special-integrated.ttl -o config10-complex.ttl -m random10.ttl
+    - python data/genconfig.py -p data/complexPolicies -r data/cpss-special-integrated.ttl -o config15-complex.ttl -m random15.ttl
+    - python data/genconfig.py -p data/complexPolicies -r data/cpss-special-integrated.ttl -o config20-complex.ttl -m random20.ttl
     - python data/genconfig.py -p data/simplePolicies -o configSimple.ttl -m data/userlocationpolicy.ttl -r data/cpss-special-integrated.ttl
     - python data/genconfig.py -p data/complexPolicies -o configComplex.ttl -m data/userlocationpolicy.ttl -r data/cpss-special-integrated.ttl
     - mashup-privacy-checker/bin/mashup-privacy-checker -check configSimple.ttl > configSimple.log
     - mashup-privacy-checker/bin/mashup-privacy-checker -check configComplex.ttl > configComplex.log
+    - mashup-privacy-checker/bin/mashup-privacy-checker -check config1-simple.ttl > config1-simple.log
+    - mashup-privacy-checker/bin/mashup-privacy-checker -check config5-simple.ttl > config5-simple.log
+    - mashup-privacy-checker/bin/mashup-privacy-checker -check config10-simple.ttl > config10-simple.log
+    - mashup-privacy-checker/bin/mashup-privacy-checker -check config15-simple.ttl > config15-simple.log
+    - mashup-privacy-checker/bin/mashup-privacy-checker -check config20-simple.ttl > config20-simple.log
+    - mashup-privacy-checker/bin/mashup-privacy-checker -check config1-complex.ttl > config1-complex.log
+    - mashup-privacy-checker/bin/mashup-privacy-checker -check config5-complex.ttl > config5-complex.log
+    - mashup-privacy-checker/bin/mashup-privacy-checker -check config10-complex.ttl > config10-complex.log
+    - mashup-privacy-checker/bin/mashup-privacy-checker -check config15-complex.ttl > config15-complex.log
+    - mashup-privacy-checker/bin/mashup-privacy-checker -check config20-complex.ttl > config20-complex.log
     - python scripts/makesummary.py -i configSimple.log >> summary.txt
     - python scripts/makesummary.py -i configComplex.log >> summary.txt
-    - zip result.zip configSimple.ttl configSimple.log configComplex.ttl configComplex.log summary.txt data/simplePolicies data/complexPolicies
+    - python scripts/makesummary.py -i config1-simple.log >> summary.txt
+    - python scripts/makesummary.py -i config5-simple.log >> summary.txt
+    - python scripts/makesummary.py -i config10-simple.log >> summary.txt
+    - python scripts/makesummary.py -i config15-simple.log >> summary.txt
+    - python scripts/makesummary.py -i config20-simple.log >> summary.txt
+    - python scripts/makesummary.py -i config1-complex.log >> summary.txt
+    - python scripts/makesummary.py -i config5-complex.log >> summary.txt
+    - python scripts/makesummary.py -i config10-complex.log >> summary.txt
+    - python scripts/makesummary.py -i config15-complex.log >> summary.txt
+    - python scripts/makesummary.py -i config20-complex.log >> summary.txt
+    - python scripts/makeplot.py -l configSimple.log configComplex.log -o simple_vs_complex.png
+    - python scripts/makeplot.py -l config1-simple.log config1-complex.log config5-simple.log config5-complex.log config10-simple.log config10-complex.log config15-simple.log config15-complex.log config20-simple.log config20-complex.log -o nwidget_vs_simple_vs_complex.png
+    - zip result.zip config*.log config*.ttl random*.ttl summary.txt data/simplePolicies data/complexPolicies
 
 after_script:
   - echo "End CI"

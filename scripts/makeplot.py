@@ -10,6 +10,7 @@ if __name__=="__main__":
 	parser.add_argument("-logs", type=str, nargs='+', help="log files")
 	parser.add_argument("-topprune", type=int, default=0, metavar="N", help="discard N largest data point(s)")
 	parser.add_argument("-bottomprune", type=int, default=0, metavar="N", help="discard N smallest data point(s)")
+	parser.add_argument("-outputfile", type=str, help="when set plot to file instead of displaying")
 	args = parser.parse_args()
 
 	summaries = []
@@ -19,18 +20,19 @@ if __name__=="__main__":
 
 	summaries = [sorted(t[2])[args.bottomprune:len(t[2])-args.topprune] for t in summaries]
 	medians = [np.median(x) for x in summaries]
+	print (medians)
 	top = max([x[-5] for x in summaries])
 
-	fig, ax = plt.subplots()
+	fig, ax = plt.subplots(figsize=(20, 10))
 	fig.canvas.set_window_title("policy checking time")
 	ax.set_title("policy checking time")
 	labels = [path.splitext(path.basename(lf))[0].replace("config","") for lf in args.logs]
-	ax.set_xticklabels(labels)
-	ax.set_xlabel("logfile")
+	#ax.set_xticklabels(labels)
+	ax.set_xlabel("N widget vs Policy type")
 	ax.set_ylim(0, top)
-	
+	plt.xticks(range(len(summaries)), labels)#, rotation='vertical')
 	ax.yaxis.grid(True, linestyle='-', which='major', color='lightgrey',
-               alpha=0.5)
+               alpha=0.5) 
 	pos = np.arange(len(summaries)) + 1
 	upperLabels = [str(np.round(s, 2)) for s in medians]
 	weights = ['bold', 'semibold']
@@ -46,4 +48,7 @@ if __name__=="__main__":
 
 	ax.set_ylabel("time (ms) - {}".format(extramsg))
 	ax.boxplot(summaries, sym='+', labels=labels)
-	plt.show()
+	if args.outputfile is not None:
+		plt.savefig(args.outputfile)
+	else:
+		plt.show()
