@@ -48,24 +48,28 @@ run_experiment:
       - ./*.ttl
       - ./*.log 
       - ./*.png
+    expire_in: 1 week
   script:
     - gradle build
     - unzip build/distributions/*.zip
     - python scripts/genpolicy.py -r data/cpss-special-integrated.ttl -o random1.ttl -g 1 -n 1
     - python scripts/genpolicy.py -r data/cpss-special-integrated.ttl -o random5.ttl -g 5 -n 1
     - python scripts/genpolicy.py -r data/cpss-special-integrated.ttl -o random10.ttl -g 10 -n 1
-    - python scripts/genpolicy.py -r data/cpss-special-integrated.ttl -o random15.ttl -g 15 -n 1
     - python scripts/genpolicy.py -r data/cpss-special-integrated.ttl -o random20.ttl -g 20 -n 1
+    - python scripts/genpolicy.py -r data/cpss-special-integrated.ttl -o random50.ttl -g 50 -n 1
+    - python scripts/genpolicy.py -r data/cpss-special-integrated.ttl -o random100.ttl -g 100 -n 1
     - python data/genconfig.py -p data/simplePolicies -r data/cpss-special-integrated.ttl -o config1-simple.ttl -m random1.ttl
     - python data/genconfig.py -p data/simplePolicies -r data/cpss-special-integrated.ttl -o config5-simple.ttl -m random5.ttl
     - python data/genconfig.py -p data/simplePolicies -r data/cpss-special-integrated.ttl -o config10-simple.ttl -m random10.ttl
-    - python data/genconfig.py -p data/simplePolicies -r data/cpss-special-integrated.ttl -o config15-simple.ttl -m random15.ttl
     - python data/genconfig.py -p data/simplePolicies -r data/cpss-special-integrated.ttl -o config20-simple.ttl -m random20.ttl
+    - python data/genconfig.py -p data/simplePolicies -r data/cpss-special-integrated.ttl -o config50-simple.ttl -m random50.ttl
+    - python data/genconfig.py -p data/simplePolicies -r data/cpss-special-integrated.ttl -o config100-simple.ttl -m random100.ttl
     - python data/genconfig.py -p data/complexPolicies -r data/cpss-special-integrated.ttl -o config1-complex.ttl -m random1.ttl
     - python data/genconfig.py -p data/complexPolicies -r data/cpss-special-integrated.ttl -o config5-complex.ttl -m random5.ttl
     - python data/genconfig.py -p data/complexPolicies -r data/cpss-special-integrated.ttl -o config10-complex.ttl -m random10.ttl
-    - python data/genconfig.py -p data/complexPolicies -r data/cpss-special-integrated.ttl -o config15-complex.ttl -m random15.ttl
     - python data/genconfig.py -p data/complexPolicies -r data/cpss-special-integrated.ttl -o config20-complex.ttl -m random20.ttl
+    - python data/genconfig.py -p data/complexPolicies -r data/cpss-special-integrated.ttl -o config50-complex.ttl -m random50.ttl
+    - python data/genconfig.py -p data/complexPolicies -r data/cpss-special-integrated.ttl -o config100-complex.ttl -m random100.ttl
     - python data/genconfig.py -p data/simplePolicies -o configSimple.ttl -m data/userlocationpolicy.ttl -r data/cpss-special-integrated.ttl
     - python data/genconfig.py -p data/complexPolicies -o configComplex.ttl -m data/userlocationpolicy.ttl -r data/cpss-special-integrated.ttl
     - mashup-privacy-checker/bin/mashup-privacy-checker -check configSimple.ttl > configSimple.log
@@ -73,27 +77,31 @@ run_experiment:
     - mashup-privacy-checker/bin/mashup-privacy-checker -check config1-simple.ttl > config1-simple.log
     - mashup-privacy-checker/bin/mashup-privacy-checker -check config5-simple.ttl > config5-simple.log
     - mashup-privacy-checker/bin/mashup-privacy-checker -check config10-simple.ttl > config10-simple.log
-    - mashup-privacy-checker/bin/mashup-privacy-checker -check config15-simple.ttl > config15-simple.log
     - mashup-privacy-checker/bin/mashup-privacy-checker -check config20-simple.ttl > config20-simple.log
+    - mashup-privacy-checker/bin/mashup-privacy-checker -check config50-simple.ttl > config50-simple.log
+    - mashup-privacy-checker/bin/mashup-privacy-checker -check config100-simple.ttl > config100-simple.log
     - mashup-privacy-checker/bin/mashup-privacy-checker -check config1-complex.ttl > config1-complex.log
     - mashup-privacy-checker/bin/mashup-privacy-checker -check config5-complex.ttl > config5-complex.log
     - mashup-privacy-checker/bin/mashup-privacy-checker -check config10-complex.ttl > config10-complex.log
-    - mashup-privacy-checker/bin/mashup-privacy-checker -check config15-complex.ttl > config15-complex.log
     - mashup-privacy-checker/bin/mashup-privacy-checker -check config20-complex.ttl > config20-complex.log
+    - mashup-privacy-checker/bin/mashup-privacy-checker -check config50-complex.ttl > config50-complex.log
+    - mashup-privacy-checker/bin/mashup-privacy-checker -check config100-complex.ttl > config100-complex.log
     - python scripts/makesummary.py -i configSimple.log >> summary.txt
     - python scripts/makesummary.py -i configComplex.log >> summary.txt
     - python scripts/makesummary.py -i config1-simple.log >> summary.txt
     - python scripts/makesummary.py -i config5-simple.log >> summary.txt
     - python scripts/makesummary.py -i config10-simple.log >> summary.txt
-    - python scripts/makesummary.py -i config15-simple.log >> summary.txt
     - python scripts/makesummary.py -i config20-simple.log >> summary.txt
+    - python scripts/makesummary.py -i config50-simple.log >> summary.txt
+    - python scripts/makesummary.py -i config100-simple.log >> summary.txt
     - python scripts/makesummary.py -i config1-complex.log >> summary.txt
     - python scripts/makesummary.py -i config5-complex.log >> summary.txt
     - python scripts/makesummary.py -i config10-complex.log >> summary.txt
-    - python scripts/makesummary.py -i config15-complex.log >> summary.txt
     - python scripts/makesummary.py -i config20-complex.log >> summary.txt
+    - python scripts/makesummary.py -i config50-complex.log >> summary.txt
+    - python scripts/makesummary.py -i config100-complex.log >> summary.txt
     - python scripts/makeplot.py -l configSimple.log configComplex.log -o simple_vs_complex.png
-    - python scripts/makeplot.py -l config1-simple.log config1-complex.log config5-simple.log config5-complex.log config10-simple.log config10-complex.log config15-simple.log config15-complex.log config20-simple.log config20-complex.log -o nwidget_vs_simple_vs_complex.png
+    - python scripts/makeplot.py -s 20 10 -x "N widget vs Policy type" -l config5-simple.log config5-complex.log config10-simple.log config10-complex.log config20-simple.log config20-complex.log config50-simple.log config50-complex.log config100-simple.log config100-complex.log -o nwidget_vs_simple_vs_complex.png
     - zip result.zip *.png config*.log config*.ttl random*.ttl summary.txt data/simplePolicies/*.ttl data/complexPolicies/*.ttl
 
 after_script:

@@ -47,3 +47,11 @@ object LW {
 	fun get(name: String) = ResourceFactory.createResource(NS+name)
 	fun getProperty(name: String) = ResourceFactory.createProperty(NS+name)	
 }
+
+object LWR {
+	const val NS = "http://linkedwidgets.org/ns/resource/"
+
+	//helper function
+	fun get(name: String) = ResourceFactory.createResource(NS+name)
+	fun getProperty(name: String) = ResourceFactory.createProperty(NS+name)	
+}

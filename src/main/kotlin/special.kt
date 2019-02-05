@@ -73,4 +73,3 @@ object SVL {
 	fun get(name: String) = ResourceFactory.createResource(NS+name)
 	fun getProperty(name: String) = ResourceFactory.createProperty(NS+name)
 }
-
