@@ -36,7 +36,7 @@ if __name__=="__main__":
 	if args.size is None:
 		fig, ax = plt.subplots()
 	else:
-		fig, ax = plt.subplits(figsize=tuple(args.size))
+		fig, ax = plt.subplots(figsize=tuple(args.size))
 	
 	fig.subplots_adjust(bottom=0.15)
 	fig.canvas.set_window_title("policy checking time")
