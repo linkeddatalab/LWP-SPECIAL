@@ -6,11 +6,11 @@ This program is a small utility to check privacy compliance using SPECIAL vocabu
 
 this project is written in kotlin and uses gradle. please change accordingly if you prefer to use maven. 
 
-###Building a zipped java application (default) 
+### Building a zipped java application (default) 
 
 `gradle build`
 
-###Building fat-jar
+### Building fat-jar
 
 open `build.gradle` file, comment line `apply plugin: 'application'` and uncomment last line in the `jar` block containing : `from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }`
 
